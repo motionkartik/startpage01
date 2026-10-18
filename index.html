@@ -5,17 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Startup Bookmarks</title>
   <style>
-    /* Reset and base styles */
-    * {
-      box-sizing: border-box;
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    :root {
+      --bg: #000;
+      --surface: #1a1a1a;
+      --surface-hi: #333;
+      --text: #fff;
+      --text-dim: #b3b3b3;
     }
 
     body {
       margin: 0;
       padding: 2rem;
-      background: #000;
+      background: var(--bg);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      color: #fff;
+      color: var(--text);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -23,16 +29,15 @@
       min-height: 100vh;
     }
 
-    /* Typography */
     h1 {
-      color: #ffffff;
-      margin-bottom: 2rem;
+      margin: 0 0 2rem;
       font-size: 2rem;
       font-weight: 600;
+      letter-spacing: -0.02em;
       text-align: center;
     }
 
-    /* Search functionality */
+    /* Search */
     .search-container {
       position: relative;
       width: 100%;
@@ -43,18 +48,16 @@
     .search-box {
       width: 100%;
       padding: 1rem 3rem 1rem 1rem;
-      background: #1a1a1a;
+      background: var(--surface);
       border: none;
       border-radius: 12px;
-      color: #fff;
+      color: var(--text);
       font-size: 1rem;
       outline: none;
       transition: background 0.1s ease;
     }
 
-    .search-box:focus {
-      background: #333;
-    }
+    .search-box:focus { background: var(--surface-hi); }
 
     .search-button {
       position: absolute;
@@ -63,21 +66,14 @@
       transform: translateY(-50%);
       background: transparent;
       border: none;
-      color: #fff;
+      color: var(--text);
       cursor: pointer;
       padding: 8px;
       transition: color 0.1s ease;
     }
 
-    .search-button:hover {
-      color: #ccc;
-    }
-
-    .search-button svg {
-      width: 18px;
-      height: 18px;
-      display: block;
-    }
+    .search-button:hover { color: var(--text-dim); }
+    .search-button svg { width: 18px; height: 18px; display: block; }
 
     /* Bookmarks grid */
     .grid {
@@ -89,31 +85,29 @@
     }
 
     .bookmark {
-      background: #1a1a1a;
+      background: var(--surface);
       padding: 1.5rem 1rem;
       border-radius: 12px;
       text-align: center;
       text-decoration: none;
-      color: #fff;
+      color: var(--text);
       transition: all 0.1s ease;
       word-break: break-word;
     }
 
     .bookmark:hover {
-      background: #333;
+      background: var(--surface-hi);
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
     }
-    
-        .bookmark--folder {
-        cursor: pointer;
-        outline: 1px solid #353535;
-        outline-offset: 3px;
+
+    .bookmark--folder {
+      cursor: pointer;
+      outline: 1px solid #353535;
+      outline-offset: 3px;
     }
 
-    .bookmark--folder:hover {
-        outline-color: #b3b3b3;
-    }
+    .bookmark--folder:hover { outline-color: var(--text-dim); }
 
     /* Status messages */
     .loading,
@@ -130,24 +124,24 @@
       border: 1px solid rgba(255, 107, 107, 0.3);
     }
 
-    /* Folder View Styles */
+    /* Folder view */
     .folder-overlay {
       position: fixed;
       inset: 0;
-      background-color: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(4px);
       z-index: 100;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.1s ease;
     }
-    
+
     .folder-view {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.95);
-      background-color: #101010;
+      background: #101010;
       border-radius: 16px;
       padding: 2rem;
       width: 90%;
@@ -164,27 +158,22 @@
       pointer-events: auto;
     }
 
-    .folder-view.visible {
-      transform: translate(-50%, -50%) scale(1);
-    }
+    .folder-view.visible { transform: translate(-50%, -50%) scale(1); }
 
     .folder-view h2 {
-      margin-top: 0;
+      margin: 0 0 2rem;
       text-align: center;
       font-weight: 600;
-      margin-bottom: 2rem;
     }
 
-    /* Responsive design */
+    /* Responsive */
     @media (max-width: 768px) {
       body { padding: 1rem; }
       h1 { font-size: 1.5rem; margin-bottom: 1.5rem; }
       .grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; }
       .bookmark { padding: 1rem 0.75rem; }
-      .folder-view { padding: 1.5rem; }
     }
 
-    /* DESKTOP VIEW */
     @media (min-width: 769px) {
       body {
         justify-content: flex-start;
@@ -195,19 +184,20 @@
 </head>
 <body>
   <h1>motionkartik</h1>
-  
-  <div class="search-container">
-    <input type="text" class="search-box" id="searchInput" >
-    <button class="search-button" id="searchButton" aria-label="Search">
+
+  <form class="search-container" action="https://www.google.com/search" method="get">
+    <input type="text" class="search-box" id="searchInput" name="q"
+           autocomplete="off" required>
+    <button class="search-button" type="submit" aria-label="Search">
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
       </svg>
     </button>
-  </div>
+  </form>
 
   <div class="loading" id="loading">Loading bookmarks...</div>
-  <div class="grid" id="bookmarks" style="display: none;"></div>
-  <div class="error" id="error" style="display: none;"></div>
+  <div class="grid" id="bookmarks" hidden></div>
+  <div class="error" id="error" hidden></div>
 
   <div id="folderOverlay" class="folder-overlay"></div>
   <div id="folderView" class="folder-view">
@@ -216,142 +206,116 @@
   </div>
 
   <script>
-    // Configuration
-    const CONFIG = {
-      CSV_URL: 'bookmarks.csv',
-      SEARCH_ENGINE: 'https://www.google.com/search?q='
+    const CSV_URL = 'bookmarks.csv';
+
+    const $ = id => document.getElementById(id);
+    const el = {
+      loading: $('loading'),
+      bookmarks: $('bookmarks'),
+      error: $('error'),
+      overlay: $('folderOverlay'),
+      view: $('folderView'),
+      viewTitle: $('folderViewTitle'),
+      viewContent: $('folderViewContent'),
     };
 
-    // DOM elements cache
-    const elements = {
-      loading: document.getElementById('loading'),
-      bookmarks: document.getElementById('bookmarks'),
-      error: document.getElementById('error'),
-      searchInput: document.getElementById('searchInput'),
-      searchButton: document.getElementById('searchButton'),
-      folderOverlay: document.getElementById('folderOverlay'),
-      folderView: document.getElementById('folderView'),
-      folderViewTitle: document.getElementById('folderViewTitle'),
-      folderViewContent: document.getElementById('folderViewContent'),
-    };
-
-    // State management
-    const UI_STATES = {
-      LOADING: 'loading',
-      BOOKMARKS: 'bookmarks',
-      ERROR: 'error'
-    };
-    
     function showState(state) {
-      Object.values(UI_STATES).forEach(uiState => {
-        elements[uiState].style.display = state === uiState ? 
-          (uiState === 'bookmarks' ? 'grid' : 'block') : 'none';
-      });
+      el.loading.hidden = state !== 'loading';
+      el.bookmarks.hidden = state !== 'bookmarks';
+      el.error.hidden = state !== 'error';
     }
 
     function showError(message) {
-      showState(UI_STATES.ERROR);
-      elements.error.textContent = `⚠️ ${message}`;
+      showState('error');
+      el.error.textContent = `⚠️ ${message}`;
     }
+
+    // Split a CSV row on commas, respecting "quoted, values"
+    const splitRow = line =>
+      line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/)
+          .map(cell => cell.trim().replace(/^"|"$/g, ''))
+          .filter(Boolean);
 
     function parseBookmarks(csv) {
       return csv.trim().split('\n').slice(1).map(line => {
-        const parts = line.split(',').map(s => s.trim()).filter(Boolean);
-        if (parts.length < 2) return null;
-        const name = parts[0];
-        const urls = parts.slice(1);
-        if (urls.length > 1) {
-          return { name, urls, type: 'folder' };
-        } else {
-          return { name, url: urls[0], type: 'link' };
-        }
+        const cells = splitRow(line);
+        if (cells.length < 2) return null;
+        const [name, ...urls] = cells;
+        return urls.length > 1
+          ? { name, urls, type: 'folder' }
+          : { name, url: urls[0], type: 'link' };
       }).filter(Boolean);
     }
-    
-     //  * Clean, capitalized name from a URL.
-        function getNameFromUrl(url) {
-        try {
-            const hostname = new URL(url).hostname;
-            const parts = hostname.replace(/^www\./, '').split('.');
-            let name = "";
 
-            if (parts.length >= 2) {
-                // Example: gemini.google.com -> Google Gemini
-                // Example: mail.google.com -> Google Mail
-                const domain = parts[parts.length - 2];
-                const subdomain = parts[0];
-
-                if (parts.length > 2 && subdomain !== 'www') { // Check for actual subdomain
-                    name = `${domain.charAt(0).toUpperCase() + domain.slice(1)} ${subdomain.charAt(0).toUpperCase() + subdomain.slice(1)}`;
-                } else { // No significant subdomain or just www
-                    name = domain.charAt(0).toUpperCase() + domain.slice(1);
-                }
-            } else {
-                // Fallback for simple domains like example.com
-                name = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
-            }
-            return name;
-        } catch (e) {
-            return "Invalid URL"; // Fallback for invalid URLs
-        }
-    }
-
-    function createLinkElement({ name, url, title }) {
-        const link = document.createElement('a');
-        link.className = 'bookmark';
-        link.href = url;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.textContent = name;
-        link.title = title || name;
-        return link;
-    }
-    
-    function createBookmark(bookmark) {
-      if (bookmark.type === 'folder') {
-        const folder = document.createElement('div');
-        folder.className = 'bookmark bookmark--folder';
-        folder.textContent = `${bookmark.name}`; // folder icon
-        folder.title = `Open "${bookmark.name}" folder`;
-        folder.addEventListener('click', () => openFolderView(bookmark));
-        return folder;
-      } else {
-        return createLinkElement(bookmark);
+    function getNameFromUrl(url) {
+      try {
+        const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+        const parts = new URL(url).hostname.replace(/^www\./, '').split('.');
+        const domain = parts[parts.length - 2] || parts[0];
+        const sub = parts[0];
+        return parts.length > 2 && sub !== 'www'
+          ? `${cap(domain)} ${cap(sub)}`
+          : cap(domain);
+      } catch {
+        return 'Invalid URL';
       }
     }
-    
-    function openFolderView(folderBookmark) {
-        elements.folderViewTitle.textContent = folderBookmark.name;
-        elements.folderViewContent.innerHTML = '';
 
-        folderBookmark.urls.forEach(url => {
-            const name = getNameFromUrl(url);
-            const linkEl = createLinkElement({ name, url, title: url });
-            elements.folderViewContent.appendChild(linkEl);
-        });
+    function renderList(items, container) {
+      container.replaceChildren(...items.map(item => {
+        if (item.type === 'folder') {
+          const folder = document.createElement('div');
+          folder.className = 'bookmark bookmark--folder';
+          folder.textContent = item.name;
+          folder.title = `Open "${item.name}" folder`;
+          folder.addEventListener('click', () => openFolderView(item));
+          return folder;
+        }
+        const link = document.createElement('a');
+        link.className = 'bookmark';
+        link.href = item.url;
+        link.textContent = item.name;
+        link.title = item.title || item.name;
+        return link;
+      }));
+    }
 
-        elements.folderOverlay.classList.add('visible');
-        elements.folderView.classList.add('visible');
+    function openFolderView(folder) {
+      el.viewTitle.textContent = folder.name;
+      renderList(
+        folder.urls.map(url => ({ name: getNameFromUrl(url), url, title: url })),
+        el.viewContent
+      );
+      el.overlay.classList.add('visible');
+      el.view.classList.add('visible');
     }
 
     function closeFolderView() {
-        elements.folderOverlay.classList.remove('visible');
-        elements.folderView.classList.remove('visible');
-    }
-
-    function performSearch() {
-      const query = elements.searchInput.value.trim();
-      if (query) {
-        window.open(`${CONFIG.SEARCH_ENGINE}${encodeURIComponent(query)}`, '_blank');
-        elements.searchInput.value = '';
-      }
+      el.overlay.classList.remove('visible');
+      el.view.classList.remove('visible');
     }
 
     async function loadBookmarks() {
-      showState(UI_STATES.LOADING);
+      showState('loading');
       try {
-        const response = await fetch(CONFIG.CSV_URL);
-        if (!response.ok) throw new Error(`HTTP ${response.status}: Could not load bookmarks`);
+        const response = await fetch(CSV_URL);
+        if (!response.ok) throw new Error(`HTTP ${response.status}: could not load bookmarks`);
+        const bookmarks = parseBookmarks(await response.text());
+        if (!bookmarks.length) throw new Error('No valid bookmarks found');
+        renderList(bookmarks, el.bookmarks);
+        showState('bookmarks');
+      } catch (error) {
+        console.error('Bookmark loading failed:', error);
+        showError(error.message);
+      }
+    }
+
+    el.overlay.addEventListener('click', closeFolderView);
+
+    loadBookmarks();
+  </script>
+</body>
+</html>not load bookmarks`);
         const csv = await response.text();
         const bookmarks = parseBookmarks(csv);
         if (bookmarks.length === 0) throw new Error('No valid bookmarks found');
